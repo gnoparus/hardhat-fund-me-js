@@ -7,7 +7,12 @@ const {
 } = require("../helper-hardhat-config");
 const { verify } = require("../utils/verify");
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
+module.exports = async ({
+    getNamedAccounts,
+    deployments,
+    getChainId,
+    getUnnamedAccounts,
+}) => {
     const { deploy, log } = deployments;
     const { deployer } = await getNamedAccounts();
     const chainId = network.config.chainId;

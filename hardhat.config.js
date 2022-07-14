@@ -1,7 +1,8 @@
 require("dotenv").config();
 
 require("@nomiclabs/hardhat-etherscan");
-require("@nomiclabs/hardhat-waffle");
+require("@nomicfoundation/hardhat-chai-matchers");
+require("@nomiclabs/hardhat-ethers");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
 require("hardhat-deploy");
@@ -32,9 +33,9 @@ module.exports = {
         rinkeby: {
             chainId: 4,
             url: process.env.RINKEBY_RPC_URL || "",
-            gas: "auto",
-            gasPrice: "auto",
-            blockConfirmations: 2,
+            gas: 19000000,
+            gasPrice: 13000000000,
+            // blockConfirmations: 2,
             accounts:
                 process.env.PRIVATE_KEY !== undefined
                     ? [process.env.PRIVATE_KEY]

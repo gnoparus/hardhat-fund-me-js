@@ -17,9 +17,8 @@ contract FundMe {
     mapping(address => uint256) private s_addressToAmountFunded;
     address[] private s_funders;
 
-    // Could we make this constant?  /* hint: no! We should make it immutable! */
     address private immutable i_owner;
-    uint256 public constant MINIMUM_USD = 11 * 10**17;
+    uint256 public constant MINIMUM_USD = 2 * 10**18;
     AggregatorV3Interface private s_priceFeed;
 
     constructor(address _priceFeedAddr) {
@@ -104,11 +103,11 @@ contract FundMe {
     //receive()  fallback()
 
     fallback() external payable {
-        fund();
+        // fund();
     }
 
     receive() external payable {
-        fund();
+        // fund();
     }
 
     function getOwner() public view returns (address) {

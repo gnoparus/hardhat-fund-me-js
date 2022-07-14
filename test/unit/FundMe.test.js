@@ -4,7 +4,7 @@ const { developmentChains } = require("../../helper-hardhat-config");
 
 !developmentChains.includes(network.name)
     ? describe.skip
-    : describe("FundMe", () => {
+    : describe("FundMe", async () => {
           let fundMe;
           let deployer;
           let mockV3Aggregator;
@@ -13,28 +13,30 @@ const { developmentChains } = require("../../helper-hardhat-config");
           beforeEach(async () => {
               const namedAccount = await getNamedAccounts();
               deployer = namedAccount.deployer;
+
               const accounts = await ethers.getSigners();
               const account0 = accounts[0];
 
               await deployments.fixture("all");
-              fundMe = await ethers.getContract("FundMe", deployer);
 
+              fundMe = await ethers.getContract("FundMe", deployer);
               mockV3Aggregator = await ethers.getContract(
                   "MockV3Aggregator",
                   deployer
               );
           });
-          describe("Constructor", () => {
+          describe("Constructor", async () => {
               it("sets the aggregator addresses correctly", async () => {
                   const response = await fundMe.getPriceFeed();
                   assert.equal(response, mockV3Aggregator.address);
               });
           });
-          describe("Fund", () => {
+          describe("Fund", async () => {
               it("Fails if you don't send enough ETH", async () => {
                   // await expect(fundMe.fund()).to.be.reverted;
 
-                  await expect(fundMe.fund()).to.be.revertedWith(
+                  await expect(fundMe.fund()).to.be.revertedWithCustomError(
+                      fundMe,
                       "FundMe__NotEnouchETH"
                   );
               });
@@ -51,7 +53,7 @@ const { developmentChains } = require("../../helper-hardhat-config");
                   assert.equal(response.toString(), deployer);
               });
           });
-          describe("Withdraw", () => {
+          describe("Withdraw", async () => {
               beforeEach(async () => {
                   await fundMe.fund({ value: sendValue });
               });
@@ -174,10 +176,10 @@ const { developmentChains } = require("../../helper-hardhat-config");
                   );
                   await expect(
                       attackerConnectedContract.withdraw()
-                  ).to.be.revertedWith("FundMe__NotOwner");
+                  ).to.be.revertedWithCustomError(fundMe, "FundMe__NotOwner");
               });
           });
-          describe("WithdrawCheap", () => {
+          describe("WithdrawCheap", async () => {
               beforeEach(async () => {
                   await fundMe.fund({ value: sendValue });
               });
@@ -300,7 +302,7 @@ const { developmentChains } = require("../../helper-hardhat-config");
                   );
                   await expect(
                       attackerConnectedContract.withdrawCheap()
-                  ).to.be.revertedWith("FundMe__NotOwner");
+                  ).to.be.revertedWithCustomError(fundMe, "FundMe__NotOwner");
               });
           });
       });
